@@ -1,7 +1,7 @@
 [project]
 name = "app"
 version = "0.1.0"
-description = "Add your description here"
+description = "Incremental learning and hands-on implementation of OAuth 2.0, PKCE, Client-ID Metadata Documents (CIMD), and secure identity for AI agents and MCP-based tool systems."
 readme = "README.md"
 authors = [
     { name = "Harry5174", email = "harisjaved010@gmail.com" }
@@ -11,12 +11,21 @@ dependencies = [
     "fastapi>=0.126.0",
     "httpx>=0.28.1",
     "pydantic>=2.12.5",
+    "pydantic-settings>=2.12.0",
     "pytest>=9.0.2",
+    "python-multipart>=0.0.21",
+    "uvicorn>=0.40.0",
 ]
 
 [project.scripts]
-app = "app:main"
+app = "app.main:app"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-asyncio>=1.3.0",
+]
