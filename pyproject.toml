@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [project.scripts]
-app = "app.main:app"
+app = "app.main:kickoff"
 
 [build-system]
 requires = ["hatchling"]
