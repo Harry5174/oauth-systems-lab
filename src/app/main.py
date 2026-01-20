@@ -1,7 +1,9 @@
 from fastapi import FastAPI
+from app.asrv.routes import router as as_router
 import uvicorn
 
 app = FastAPI(title="0Auth Identity lab")
+app.include_router(as_router)
 
 
 @app.get("/health")

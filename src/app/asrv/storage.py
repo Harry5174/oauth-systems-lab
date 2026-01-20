@@ -9,7 +9,7 @@ REGISTERED_REDIRECT_URIS: Dict[str, List[str]] = {
     "client-123" : ["https://agent.example.com/callback"]
 }
 
-@dataclass(fronzen=True)
+@dataclass(frozen=True)
 class AuthCodeRecord:
     client_id: str
     redirect_uri: str
