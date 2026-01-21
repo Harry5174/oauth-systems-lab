@@ -2,24 +2,22 @@ from fastapi import APIRouter, HTTPException, Query, Form
 from fastapi.responses import RedirectResponse
 
 from app.asrv.storage import (
-    REGISTERED_REDIRECT_URIS,
+    # REGISTERED_REDIRECT_URIS,
     issue_authorization_code,
     pop_authorization_code,
     issue_access_token,
 )
 from app.asrv.pkce import verify_pkce
 
+from app.cimd.fetcher import fetch_client_metadata
+from app.cimd.cache import get_cached, set_cached
+
+
 router = APIRouter(tags=["authorization-server"])
 
 
-def require_exact_redirect(client_id: str, redirect_uri: str) -> None:
-    allowed = REGISTERED_REDIRECT_URIS.get(client_id, [])
-    if redirect_uri not in allowed:
-        raise HTTPException(status_code=400, detail="redirect_uri mismatch")
-
-
 @router.get("/authorize")
-def authorize(
+async def authorize(
     client_id: str = Query(...),
     response_type: str = Query(...),
     redirect_uri: str = Query(...),
@@ -34,7 +32,15 @@ def authorize(
     if code_challenge_method != "S256":
         raise HTTPException(status_code=400, detail="unsupported code_challenge_method")
 
-    require_exact_redirect(client_id, redirect_uri)
+    metadata = get_cached(client_id)
+    if not metadata:
+        metadata = await fetch_client_metadata(client_id)
+        set_cached(client_id, metadata)
+
+    # Invariant 4: exact redirect match
+    if redirect_uri not in [str(u) for u in metadata.redirect_uris]:
+        raise HTTPException(status_code=400, detail="redirect_uri not registered")
+        
 
     # Issue auth code
     code = issue_authorization_code(

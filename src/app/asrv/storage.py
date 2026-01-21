@@ -2,12 +2,8 @@ import time
 import secrets
 from dataclasses import dataclass
 
-from typing import Dict, List
+from typing import Dict
 
-# Temporary static client Registration (Phase 3.2 only)
-REGISTERED_REDIRECT_URIS: Dict[str, List[str]] = {
-    "client-123" : ["https://agent.example.com/callback"]
-}
 
 @dataclass(frozen=True)
 class AuthCodeRecord:
